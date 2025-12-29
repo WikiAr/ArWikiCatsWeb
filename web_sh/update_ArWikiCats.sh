@@ -39,7 +39,6 @@ git clone --branch "$BRANCH" "$REPO_URL" "$CLONE_DIR"
 rm -f "$ASKPASS_SCRIPT"
 unset GIT_ASKPASS GIT_USERNAME GIT_TERMINAL_PROMPT
 
-
 # Enter the cloned repository
 cd "$CLONE_DIR" || exit 1
 
