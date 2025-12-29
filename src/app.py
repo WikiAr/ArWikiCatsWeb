@@ -130,8 +130,6 @@ def get_titles():
         return jsonify({"error": "حدث خطأ أثناء تحميل المكتبة"})
     # ---
     result = batch_resolve_labels(titles)
-    print(result.labels)
-    print(result.no_labels)
     # ---
     len_result = len(result.labels)
     # ---
