@@ -18,7 +18,7 @@ A Flask-based web service for resolving Arabic Wikipedia category labels. This s
 - Python 3.11+
 - Dependencies listed in `src/requirements.txt`:
   - Flask
-  - Flask-CORS
+  - flask_cors
   - ArWikiCats
   - wikitextparser
   - tqdm
@@ -59,7 +59,7 @@ Resolve a single Arabic category label.
 
 **Example**:
 ```bash
-curl -H "User-Agent: MyBot/1.0" https://yourserver/api/Category:Example
+curl -H "User-Agent: MyBot/1.0" https://yourserver/api/Category%3AExample
 ```
 
 **Response**:
