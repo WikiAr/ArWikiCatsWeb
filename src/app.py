@@ -2,8 +2,8 @@
 import sys
 from flask import Flask, render_template
 from flask_cors import CORS
-from routes.api import api_bp
-from routes.ui import ui_bp
+
+from routes import api_bp, ui_bp
 
 from logs_db import init_db
 
