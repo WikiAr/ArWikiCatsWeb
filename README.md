@@ -17,12 +17,8 @@ A Flask-based web service for resolving Arabic Wikipedia category labels. This s
 
 - Python 3.11+
 - Dependencies listed in `src/requirements.txt`:
-  - wikitextparser
   - flask
   - flask_cors
-  - tqdm
-  - psutil
-  - humanize
   - ArWikiCats
 
 ## Installation
