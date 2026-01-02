@@ -2,13 +2,11 @@
 import sys
 from flask import Flask, render_template, request
 from flask_cors import CORS
-
-import logs_db
-import logs_bot
 from routes.api import api_bp
 
-sys.argv.append("noprint")
-
+from logs_db import init_db
+import logs_bot
+from logs_bot import view_logs
 
 app = Flask(__name__)
 # Allow cross-origin requests (needed when calling this API from pages like https://ar.wikipedia.org)
@@ -22,21 +20,21 @@ app.register_blueprint(api_bp)
 
 
 @app.route("/logs", methods=["GET"])
-def view_logs():
+def logs_views() -> str:
     # ---
-    result = logs_bot.view_logs(request)
+    result = view_logs(request)
     # ---
     return render_template("logs.html", result=result)
 
 
 @app.route("/no_result", methods=["GET"])
-def no_result():
+def no_result() -> str:
     # ---
     return render_template("no_result.html")
 
 
 @app.route("/logs_by_day", methods=["GET"])
-def logs_by_day():
+def logs_by_day() -> str:
     # ---
     result = logs_bot.logs_by_day(request)
     # ---
@@ -80,7 +78,7 @@ def internal_server_error(e):
 
 
 if __name__ == "__main__":
-    logs_db.init_db()
+    init_db()
     # ---
     debug = "debug" in sys.argv or "DEBUG" in sys.argv
     # ---
