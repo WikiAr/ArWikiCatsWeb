@@ -159,7 +159,7 @@ def logs_api():
     return jsonify(result)
 
 
-@app.route("/logs1", methods=["GET"])
+@app.route("/logs", methods=["GET"])
 def view_logs():
     # ---
     result = logs_bot.view_logs(request)
@@ -220,10 +220,6 @@ def internal_server_error(e):
 if __name__ == "__main__":
     logs_db.init_db()
     # ---
-    debug = "debug" in sys.argv
-    # ---
-    if debug:
-        url = "http://localhost:3000/core/bots/ma/web/adminer/index.php?sqlite=&username=xxx&db=..%2Fnew_logs.db"
-        print("Adminer:", url)
+    debug = "debug" in sys.argv or "DEBUG" in sys.argv
     # ---
     app.run(debug=debug)
