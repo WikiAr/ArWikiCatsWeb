@@ -25,7 +25,7 @@ CORS(
 )
 
 
-def jsonify(data : dict) -> str:
+def jsonify(data: dict) -> str:
     response_json = json.dumps(data, ensure_ascii=False, indent=4)
     return Response(response=response_json, content_type="application/json; charset=utf-8")
 
@@ -96,7 +96,7 @@ def get_title(title) -> str:
     # ---
     delta = time.time() - start_time
     # ---
-    data['sql'] = logs_db.log_request("/api/<title>", title, label or "no_result", delta)
+    data["sql"] = logs_db.log_request("/api/<title>", title, label or "no_result", delta)
     # ---
     return jsonify(data)
 
@@ -142,7 +142,13 @@ def get_titles():
     # ---
     delta2 = time.time() - start_time
     # ---
-    response_data = {"results": result.labels, "no_labs": len(result.no_labels), "with_labs": len_result, "duplicates": duplicates, "time": delta2}
+    response_data = {
+        "results": result.labels,
+        "no_labs": len(result.no_labels),
+        "with_labs": len_result,
+        "duplicates": duplicates,
+        "time": delta2,
+    }
     # ---
     # تحديد حالة الاستجابة
     response_status = "success" if len_result > 0 else "no_result"

@@ -21,6 +21,7 @@ db_path_main = {1: str(db_path)}
 
 print("db_path", db_path_main[1])
 
+
 def change_db_path(file):
     # ---
     db_path = str(main_path) + f"/{file}"
@@ -35,6 +36,7 @@ def change_db_path(file):
     # ---
     return dbs
 
+
 def db_commit(query, params=[]):
     try:
         with sqlite3.connect(db_path_main[1]) as conn:
@@ -46,6 +48,7 @@ def db_commit(query, params=[]):
     except sqlite3.Error as e:
         print(f"init_db Database error: {e}")
         return e
+
 
 def init_db():
     query = """
@@ -77,6 +80,7 @@ def init_db():
         );
         """
     db_commit(query)
+
 
 def fetch_all(query, params=[], fetch_one=False):
     try:

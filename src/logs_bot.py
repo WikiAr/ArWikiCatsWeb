@@ -60,7 +60,9 @@ def view_logs(request):
     # ---
     status = status if (status in status_table or status == "Category") else ""
     # ---
-    logs = logs_db.get_logs(per_page, offset, order, order_by=order_by, status=status, table_name=table_name, like=like, day=day)
+    logs = logs_db.get_logs(
+        per_page, offset, order, order_by=order_by, status=status, table_name=table_name, like=like, day=day
+    )
     # ---
     # Convert to list of dicts
     log_list = []
@@ -68,7 +70,7 @@ def view_logs(request):
     for log in logs:
         # {'id': 1, 'endpoint': 'api', 'request_data': 'Category:1934-35 in Bulgarian football', 'response_status': 'true', 'response_time': 123123.0, 'response_count': 6, 'timestamp': '2025-04-10 01:08:58'}
         # ---
-        request_data = log["request_data"].replace("_", ' ')
+        request_data = log["request_data"].replace("_", " ")
         # ---
         # 2025-04-23 21:13:18
         timestamp = log["timestamp"].split(" ")[1]
@@ -162,7 +164,7 @@ def logs_by_day(request):
     for x in logs_data:
         day = x["date_only"]
         # ---
-        data_logs.setdefault(day, {"day": day, "title_count": 0 , "results": {"no_result": 0, "Category": 0}})
+        data_logs.setdefault(day, {"day": day, "title_count": 0, "results": {"no_result": 0, "Category": 0}})
         # ---
         data_logs[day]["title_count"] += x["title_count"]
         # ---
@@ -196,7 +198,7 @@ def logs_by_day(request):
             "table_name": table_name,
             # "order": order,
             # "order_by": order_by,
-        }
+        },
     }
     # ---
     return data
