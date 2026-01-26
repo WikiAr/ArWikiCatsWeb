@@ -6,3 +6,4 @@ src/app copy.py
 *.sql
 /adminer
 *.zip
+.coverage
