@@ -87,7 +87,7 @@ def get_title(title) -> str:
     # ---
     if resolve_arabic_category_label is None:
         log_request("/api/<title>", title, "error", time.time() - start_time)
-        return jsonify({"error": "حدث خطأ أثناء تحميل المكتبة"})
+        return jsonify({"error": "حدث خطأ أثناء تحميل المكتبة"}), 500
     # ---
     label = resolve_arabic_category_label(title)
     # ---
@@ -128,7 +128,7 @@ def get_titles():
 
     if batch_resolve_labels is None:
         log_request("/api/list", titles, "error", delta)
-        return jsonify({"error": "حدث خطأ أثناء تحميل المكتبة"})
+        return jsonify({"error": "حدث خطأ أثناء تحميل المكتبة"}), 500
     # ---
     result = batch_resolve_labels(titles)
     # ---
