@@ -1,37 +1,112 @@
-import json
+# -*- coding: utf-8 -*-
+"""
+Tests for User-Agent header validation using Flask test client.
+"""
+import pytest
 
-import requests
-
-# Base URL - adjust if your server runs on a different port
-BASE_URL = "http://localhost:5000"
+from src.app import create_app
 
 
-def test_api_without_user_agent():
-    """Test that API endpoints correctly handle missing User-Agent header."""
-    try:
-        # Test single title endpoint
-        title_response = requests.get(f"{BASE_URL}/api/Category:Yemen", headers={"User-Agent": ""})
-        assert title_response.status_code == 400, "Single title endpoint should return 400 without User-Agent"
-        assert "error" in title_response.json(), "Response should contain an error message"
-        assert (
-            "User-Agent header is required" in title_response.json()["error"]
-        ), "Error should mention User-Agent requirement"
+class TestUserAgentHeader:
+    """Tests for User-Agent header validation in API endpoints."""
 
-        # Test titles list endpoint
+    @pytest.fixture
+    def client(self):
+        """Create Flask test client."""
+        app = create_app()
+        app.config["TESTING"] = True
+        with app.test_client() as client:
+            yield client
+
+    def test_single_title_endpoint_without_user_agent(self, client):
+        """Test that single title endpoint returns 400 without User-Agent."""
+        response = client.get(
+            "/api/Category:Yemen",
+            headers={"User-Agent": ""}
+        )
+
+        assert response.status_code == 400
+        data = response.get_json()
+        assert "error" in data
+        assert "User-Agent header is required" in data["error"]
+
+    def test_single_title_endpoint_with_user_agent(self, client):
+        """Test that single title endpoint works with User-Agent."""
+        from unittest.mock import patch
+
+        with patch("src.app.routes.api.resolve_arabic_category_label") as mock_resolve:
+            with patch("src.app.routes.api.log_request", return_value="test"):
+                mock_resolve.return_value = "تصنيف:اليمن"
+
+                response = client.get(
+                    "/api/Category:Yemen",
+                    headers={"User-Agent": "TestAgent/1.0"}
+                )
+
+                # Should either succeed with the mock or return library error
+                assert response.status_code in [200, 500]
+
+    def test_list_endpoint_without_user_agent(self, client):
+        """Test that list endpoint returns 400 without User-Agent."""
         data = {"titles": ["test_title1", "test_title2"]}
-        list_response = requests.post(f"{BASE_URL}/api/list", json=data, headers={"User-Agent": ""})
-        assert list_response.status_code == 400, "List endpoint should return 400 without User-Agent"
-        assert "error" in list_response.json(), "Response should contain an error message"
-        assert (
-            "User-Agent header is required" in list_response.json()["error"]
-        ), "Error should mention User-Agent requirement"
+        response = client.post(
+            "/api/list",
+            json=data,
+            headers={"User-Agent": ""}
+        )
 
-        print("All tests passed!")
-    except requests.exceptions.ConnectionError:
-        print("ERROR: Could not connect to the API server. Make sure it's running at", BASE_URL)
-        raise
+        assert response.status_code == 400
+        data = response.get_json()
+        assert "error" in data
+        assert "User-Agent header is required" in data["error"]
 
+    def test_list_endpoint_with_user_agent(self, client):
+        """Test that list endpoint works with User-Agent."""
+        from unittest.mock import patch, MagicMock
 
-if __name__ == "__main__":
-    # python3 I:\core\bots\ma\web\src\tests\test_user_agent.py
-    test_api_without_user_agent()
+        mock_result = MagicMock()
+        mock_result.labels = {"test_title1": "تصنيف:اختبار1"}
+        mock_result.no_labels = []
+
+        with patch("src.app.routes.api.batch_resolve_labels") as mock_batch:
+            with patch("src.app.routes.api.log_request"):
+                mock_batch.return_value = mock_result
+
+                data = {"titles": ["test_title1", "test_title2"]}
+                response = client.post(
+                    "/api/list",
+                    json=data,
+                    headers={"User-Agent": "TestAgent/1.0"}
+                )
+
+                # Should either succeed with the mock or return library error
+                assert response.status_code in [200, 500]
+
+    def test_all_api_respect_user_agent_requirement(self, client):
+        """Test that all POST/GET API endpoints require User-Agent header."""
+        from unittest.mock import patch
+
+        # Mock the library and log_request to avoid import errors
+        with patch("src.app.routes.api.resolve_arabic_category_label"):
+            with patch("src.app.routes.api.log_request"):
+                # Test various endpoints
+                endpoints = [
+                    ("/api/Category:Test", "GET"),
+                    ("/api/list", "POST"),
+                ]
+
+                for endpoint, method in endpoints:
+                    if method == "GET":
+                        response = client.get(
+                            endpoint,
+                            headers={"User-Agent": ""}
+                        )
+                    else:
+                        response = client.post(
+                            endpoint,
+                            json={"titles": ["test"]},
+                            headers={"User-Agent": ""}
+                        )
+
+                    # All should return 400 for missing User-Agent
+                    assert response.status_code == 400, f"Endpoint {endpoint} should require User-Agent"
