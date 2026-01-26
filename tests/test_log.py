@@ -227,7 +227,7 @@ class TestLogRequest:
     @pytest.fixture
     def mock_db(self):
         """Mock database functions."""
-        with patch("app.logs_db.bot.db_commit") as mock_commit:
+        with patch("src.app.logs_db.bot.db_commit") as mock_commit:
             mock_commit.return_value = True
             yield mock_commit
 
