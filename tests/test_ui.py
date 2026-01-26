@@ -13,7 +13,7 @@ class TestUIRoutes:
     @pytest.fixture
     def client(self):
         """Create Flask test client."""
-        from app import create_app
+        from src.app import create_app
         app = create_app()
         app.config["TESTING"] = True
         with app.test_client() as client:
@@ -102,7 +102,7 @@ class TestUIWithQueryParams:
     @pytest.fixture
     def client(self):
         """Create Flask test client."""
-        from app import create_app
+        from src.app import create_app
         app = create_app()
         app.config["TESTING"] = True
         with app.test_client() as client:
@@ -194,7 +194,7 @@ class TestErrorHandling:
     @pytest.fixture
     def client(self):
         """Create Flask test client."""
-        from app import create_app
+        from src.app import create_app
         app = create_app()
         app.config["TESTING"] = True
         with app.test_client() as client:
