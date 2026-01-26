@@ -22,6 +22,14 @@ def jsonify(data: dict) -> str:
     return Response(response=response_json, content_type="application/json; charset=utf-8")
 
 
+def check_user_agent(endpoint, data, start_time):
+    if not request.headers.get("User-Agent"):
+        response_status = "User-Agent missing"
+        log_request(endpoint, data, response_status, time.time() - start_time)
+        return jsonify({"error": "User-Agent header is required"}), 400
+    return None
+
+
 @api_bp.route("/logs_by_day", methods=["GET"])
 def get_logs_by_day() -> str:
     result = logs_bot.retrieve_logs_by_date(request)
@@ -73,10 +81,9 @@ def get_title(title) -> str:
     start_time = time.time()
     # ---
     # Check for User-Agent header
-    if not request.headers.get("User-Agent"):
-        response_status = "User-Agent missing"
-        log_request("/api/<title>", title, response_status, time.time() - start_time)
-        return jsonify({"error": "User-Agent header is required"}), 400
+    ua_check = check_user_agent("/api/<title>", title, start_time)
+    if ua_check:
+        return ua_check
     # ---
     if resolve_arabic_category_label is None:
         log_request("/api/<title>", title, "error", time.time() - start_time)
@@ -107,10 +114,9 @@ def get_titles():
     duplicates = len_titles - len(titles)
     # ---
     # Check for User-Agent header
-    if not request.headers.get("User-Agent"):
-        response_status = "User-Agent missing"
-        log_request("/api/list", titles, response_status, delta)
-        return jsonify({"error": "User-Agent header is required"}), 400
+    ua_check = check_user_agent("/api/list", titles, start_time)
+    if ua_check:
+        return ua_check
     # ---
     # تأكد أن البيانات قائمة
     if not isinstance(titles, list):
