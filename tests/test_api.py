@@ -311,3 +311,25 @@ class TestListEndpoint:
                 )
 
                 assert response.status_code == 500
+
+    def test_list_endpoint_no_labels_added_to_results(self, client):
+        """Test list endpoint adds no_labels entries to results with empty strings."""
+        mock_result = MagicMock()
+        mock_result.labels = {"Category:Test1": "تصنيف:اختبار1"}
+        mock_result.no_labels = ["Category:NotFound", "Category:Test1"]
+
+        with patch("src.app.routes.api.batch_resolve_labels") as mock_batch:
+            with patch("src.app.routes.api.log_request"):
+                mock_batch.return_value = mock_result
+
+                response = client.post(
+                    "/api/list",
+                    json={"titles": ["Category:Test1", "Category:NotFound"]},
+                    headers={"User-Agent": "TestAgent/1.0"}
+                )
+
+                assert response.status_code == 200
+                data = json.loads(response.get_data(as_text=True))
+                # Category:NotFound should be in results with empty string
+                assert "Category:NotFound" in data["results"]
+                assert data["results"]["Category:NotFound"] == ""

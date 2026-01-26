@@ -334,3 +334,75 @@ class TestGetResponseStatus:
             assert "rare_status" not in result
         finally:
             db.db_path_main[1] = original_path
+
+
+class TestInitDb:
+    """Tests for init_db function."""
+
+    def test_init_db_creates_tables(self, tmp_path):
+        """Test init_db creates both logs and list_logs tables."""
+        from src.app.logs_db import db
+
+        db_file = tmp_path / "test_init.db"
+        original_path = db.db_path_main[1]
+        db.db_path_main[1] = str(db_file)
+
+        try:
+            # Create a fresh database with no tables
+            import sqlite3
+            conn = sqlite3.connect(str(db_file))
+            conn.close()
+
+            # Run init_db
+            db.init_db()
+
+            # Verify tables were created
+            conn = sqlite3.connect(str(db_file))
+            cursor = conn.cursor()
+
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+            tables = [row[0] for row in cursor.fetchall()]
+
+            assert "logs" in tables
+            assert "list_logs" in tables
+
+            # Verify logs table structure
+            cursor.execute("PRAGMA table_info(logs)")
+            log_columns = {row[1]: row[2] for row in cursor.fetchall()}
+            assert "id" in log_columns
+            assert "endpoint" in log_columns
+            assert "request_data" in log_columns
+            assert "response_status" in log_columns
+
+            conn.close()
+        finally:
+            db.db_path_main[1] = original_path
+
+    def test_init_db_is_idempotent(self, tmp_path):
+        """Test init_db can be called multiple times safely."""
+        from src.app.logs_db import db
+
+        db_file = tmp_path / "test_idempotent.db"
+        original_path = db.db_path_main[1]
+        db.db_path_main[1] = str(db_file)
+
+        try:
+            import sqlite3
+            conn = sqlite3.connect(str(db_file))
+            conn.close()
+
+            # Run init_db twice
+            db.init_db()
+            db.init_db()
+
+            # Should not fail and tables should exist
+            conn = sqlite3.connect(str(db_file))
+            cursor = conn.cursor()
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+            tables = [row[0] for row in cursor.fetchall()]
+            conn.close()
+
+            assert "logs" in tables
+            assert "list_logs" in tables
+        finally:
+            db.db_path_main[1] = original_path
