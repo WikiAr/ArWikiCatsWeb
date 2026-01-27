@@ -2,23 +2,21 @@
 
 [![CI/CD](https://github.com/WikiAr/ArWikiCatsWeb/workflows/pytest/badge.svg)](https://github.com/WikiAr/ArWikiCatsWeb/actions)
 [![codecov](https://codecov.io/gh/WikiAr/ArWikiCatsWeb/branch/main/graph/badge.svg)](https://codecov.io/gh/WikiAr/ArWikiCatsWeb)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/WikiAr/make2-web)
-
-خدمة ويب قائمة على Flask لحل تسميات تصنيفات ويكيبيديا العربية. توفر هذه الخدمة واجهة ويب وواجهة برمجة تطبيقات REST للعمل مع تصنيفات ويكيبيديا العربية.
+<!-- [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/WikiAr/make2-web) -->
 
 A Flask-based web service for resolving Arabic Wikipedia category labels. Provides both a web interface and REST API for working with Arabic Wikipedia categories.
 
-## المميزات / Features
+## Features
 
 - **REST API**: Resolve Arabic category labels via HTTP endpoints
-- **واجهة الويب**: Interactive UI for testing and exploring category labels
-- **المعالجة الجماعية**: Batch processing support for multiple categories
-- **نظام السجلات**: SQLite-based logging for tracking API usage and performance
-- **دعم CORS**: Configured for cross-origin requests from Wikipedia domains
-- **اختبارات شاملة**: Comprehensive test suite with 89% coverage
+- **Web Interface**: Interactive UI for testing and exploring category labels
+- **Batch Processing**: Support for resolving multiple categories at once
+- **Logging System**: SQLite-based logging for tracking API usage and performance
+- **CORS Support**: Configured for cross-origin requests from Wikipedia domains
+- **Comprehensive Tests**: 89% test coverage with pytest
 - **CI/CD**: Automated testing with GitHub Actions
 
-## المتطلبات / Requirements
+## Requirements
 
 - Python 3.11+
 - Dependencies listed in `src/requirements.txt`:
@@ -26,25 +24,25 @@ A Flask-based web service for resolving Arabic Wikipedia category labels. Provid
   - flask_cors
   - ArWikiCats
 
-## التثبيت / Installation
+## Installation
 
-1. **استنساخ المستودع / Clone the repository:**
+1. **Clone the repository:**
 ```bash
 git clone https://github.com/WikiAr/ArWikiCatsWeb.git
 cd ArWikiCatsWeb
 ```
 
-2. **تثبيت التبعيات / Install dependencies:**
+2. **Install dependencies:**
 ```bash
 pip install -r src/requirements.txt
 ```
 
-3. **تثبيت تبعيات التطوير (اختياري) / Install dev dependencies (optional):**
+3. **Install dev dependencies (optional):**
 ```bash
 pip install -r requirements-dev.txt
 ```
 
-4. **تشغيل التطبيق / Run the application:**
+4. **Run the application:**
 ```bash
 # Using Python directly
 python -m flask --app src.app run
@@ -56,7 +54,7 @@ flask --app src.app run
 flask --app src.app run --debug
 ```
 
-## الاختبار / Testing
+## Testing
 
 ```bash
 # Run all tests
@@ -72,7 +70,7 @@ pytest tests/test_api.py
 pytest -v
 ```
 
-## هيكل المشروع / Project Structure
+## Project Structure
 
 ```
 ArWikiCatsWeb/
@@ -109,20 +107,20 @@ ArWikiCatsWeb/
 └── README.md                 # This file
 ```
 
-## نقاط نهاية واجهة برمجة التطبيقات / API Endpoints
+## API Endpoints
 
-### Single Category Resolution / تسمية تصنيف واحد
+### Single Category Resolution
 
 **Endpoint**: `GET /api/<title>`
 
 Resolve a single Arabic category label.
 
-**Example / مثال**:
+**Example:**
 ```bash
 curl -H "User-Agent: MyBot/1.0" http://localhost:5000/api/Category%3AYemen
 ```
 
-**Response / الاستجابة**:
+**Response:**
 ```json
 {
     "result": "تصنيف:اليمن",
@@ -130,20 +128,20 @@ curl -H "User-Agent: MyBot/1.0" http://localhost:5000/api/Category%3AYemen
 }
 ```
 
-### Batch Processing / المعالجة الجماعية
+### Batch Processing
 
 **Endpoint**: `POST /api/list`
 
 Resolve multiple category labels at once.
 
-**Request body / محتوى الطلب**:
+**Request body:**
 ```json
 {
     "titles": ["Category:Yemen", "Category:Saudi_Arabia"]
 }
 ```
 
-**Response / الاستجابة**:
+**Response:**
 ```json
 {
     "results": {
@@ -157,7 +155,7 @@ Resolve multiple category labels at once.
 }
 ```
 
-### Logs & Statistics / السجلات والإحصائيات
+### Logs & Statistics
 
 - `GET /api/logs_by_day` - Get logs aggregated by day
 - `GET /api/all` - Get all logs
@@ -169,7 +167,7 @@ Resolve multiple category labels at once.
 - `GET /api/status` - Get status table
 - `GET /api/logs` - View logs with pagination
 
-## مسارات واجهة الويب / Web UI Routes
+## Web UI Routes
 
 - `/` - Main interface for testing category resolution
 - `/list` - Batch processing interface
@@ -177,28 +175,26 @@ Resolve multiple category labels at once.
 - `/logs` - View logs with filtering
 - `/logs_by_day` - View logs grouped by day
 
-## متطلبات واجهة برمجة التطبيقات / API Requirements
+## API Requirements
 
-**User-Agent Header / رأس User-Agent:**
+**User-Agent Header:**
 
 All API requests MUST include a `User-Agent` header. Requests without this header will return a 400 error.
 
-**Valid request / طلب صحيح:**
+**Valid request:**
 ```bash
 curl -H "User-Agent: MyBot/1.0" http://localhost:5000/api/Category:Test
 ```
 
-**Invalid request / طلب غير صحيح:**
+**Invalid request:**
 ```bash
 curl http://localhost:5000/api/Category:Test
 # Returns: 400 {"error": "User-Agent header is required"}
 ```
 
-## النشر / Deployment
+## Deployment
 
 ### Toolforge
-
-تم تكوين هذه الخدمة للنشر على Wikimedia Toolforge. يتم توفير التكوين في `service.template`:
 
 This service is configured for deployment on Wikimedia Toolforge. Configuration is provided in `service.template`:
 
@@ -208,20 +204,18 @@ This service is configured for deployment on Wikimedia Toolforge. Configuration 
 - **Memory**: 6Gi
 - **Replicas**: 2
 
-Deploy using / النشر باستخدام:
+Deploy using:
 ```bash
 webservice start
 ```
 
 ### UWSGI
 
-يتضمن المشروع تكوين UWSGI للعمليات الإنتاجية.
-
 The project includes UWSGI configuration for production deployments.
 
-## التطوير / Development
+## Development
 
-### Running Tests / تشغيل الاختبارات
+### Running Tests
 
 ```bash
 # Run all tests
@@ -235,11 +229,11 @@ pytest --cov=src --cov-report=html
 open htmlcov/index.html
 ```
 
-### Code Coverage / تغطية الكود
+### Code Coverage
 
 Current coverage: **89%**
 
-Fully covered modules / وحدات مغطاة بالكامل:
+Fully covered modules:
 - `src/app/logs_bot.py` - 100%
 - `src/app/routes/api.py` - 100%
 - `src/app/routes/ui.py` - 100%
@@ -248,7 +242,7 @@ Fully covered modules / وحدات مغطاة بالكامل:
 
 The project uses GitHub Actions for continuous integration. Tests run automatically on push and pull requests.
 
-## المكونات الرئيسية / Main Components
+## Main Components
 
 - **ArWikiCats Library**: Core library for resolving Arabic category labels
 - **Flask Application**: Web server and API endpoints using application factory pattern
@@ -256,15 +250,11 @@ The project uses GitHub Actions for continuous integration. Tests run automatica
 - **CORS Configuration**: Allows requests from ar.wikipedia.org domains
 - **Test Suite**: Comprehensive pytest-based tests with mocking
 
-## الترخيص / License
-
-هذا المشروع جزء من منظمة WikiAr لأدوات ويكيبيديا العربية والمرافق.
+## License
 
 This project is part of the WikiAr organization for Arabic Wikipedia tools and services.
 
-## المساهمة / Contributing
-
-المساهمات مرحب بها! يرجى التأكد من أن الكود الخاص بك يتبع الأسلوب الحالي ويتضمن الاختبارات المناسبة.
+## Contributing
 
 Contributions are welcome! Please ensure your code follows the current style and includes appropriate tests.
 
@@ -275,8 +265,6 @@ Contributions are welcome! Please ensure your code follows the current style and
 5. Ensure all tests pass: `pytest`
 6. Submit a pull request
 
-## الدعم / Support
-
-للمشاكل والأسئلة، يرجى استخدام متتبع المشاكل على GitHub.
+## Support
 
 For issues and questions, please use the GitHub issue tracker.
