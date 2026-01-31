@@ -3,10 +3,10 @@ Logging configuration with colored output.
 """
 
 import functools
-import re
 import logging
+import re
 import sys
-from typing import Optional
+
 import colorlog
 
 
@@ -114,37 +114,31 @@ def format_colored_text(textm: str) -> str:
 
 def wrap_color_messages(format_message):
     """Wrap the color messages to include additional context."""
+
     def wrapper(record):
         # Add custom attributes or modify the record as needed
         return format_colored_text(format_message(record))
+
     return wrapper
 
 
-_configured = False
-
-
-def setup_logging(level: str = "INFO", log_file: Optional[str] = None, name: str="") -> None:
+def setup_logging(
+    level: str = "WARNING",
+) -> None:
     """
-    Configure colored logging for console and optional file output.
-
-    Args:
-        level: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-        log_file: Optional file path for log output
-
-    Example:
-        >>> setup_logging(level="DEBUG", log_file="app.log")
+    Configure logging for the entire project namespace only.
     """
-    global _configured
-    if _configured:
+    project_logger = logging.getLogger(__name__)
+
+    if project_logger.handlers:
         return
-    # Convert string level to logging constant
-    numeric_level = getattr(logging, level.upper(), logging.INFO) if isinstance(level, str) else level
 
-    # Create color formatter for console
-    console_formatter = colorlog.ColoredFormatter(
-        # fmt="%(log_color)s%(asctime)s - %(name)s - %(levelname)-8s%(reset)s %(message)s",
-        fmt="%(name)s - %(lineno)s - %(log_color)s%(levelname)-8s%(reset)s %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
+    numeric_level = getattr(logging, level.upper(), logging.INFO)
+    project_logger.setLevel(numeric_level)
+    project_logger.propagate = False
+
+    formatter = colorlog.ColoredFormatter(
+        fmt="%(filename)s:%(lineno)s %(funcName)s() - %(log_color)s%(levelname)-s %(reset)s%(message)s",
         log_colors={
             "DEBUG": "cyan",
             "INFO": "green",
@@ -152,29 +146,14 @@ def setup_logging(level: str = "INFO", log_file: Optional[str] = None, name: str
             "ERROR": "red",
             "CRITICAL": "red,bg_white",
         },
-        secondary_log_colors={},
-        style="%",
     )
-    console_formatter.formatMessage = wrap_color_messages(console_formatter.formatMessage)
-    # Console handler with colors
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setFormatter(console_formatter)
-    # console_handler.setLevel(numeric_level)
 
-    # Root logger configuration
-    root_logger = logging.getLogger(name)
-    root_logger.setLevel(numeric_level)
-    root_logger.addHandler(console_handler)
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(formatter)
+    # message colorizer
+    formatter.formatMessage = wrap_color_messages(formatter.formatMessage)
 
-    # Optional file handler (no colors)
-    if log_file:
-        file_formatter = logging.Formatter(
-            fmt="%(asctime)s - %(name)s - %(levelname)-8s - %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
-        )
-        file_handler = logging.FileHandler(log_file, mode="a", encoding="utf-8")
-        file_handler.setFormatter(file_formatter)
-        file_handler.setLevel(numeric_level)
-        root_logger.addHandler(file_handler)
+    handler.setLevel(numeric_level)
+    handler.propagate = False
 
-    _configured = True
+    project_logger.addHandler(handler)
