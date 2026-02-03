@@ -6,7 +6,7 @@ BRANCH="${1:-main}"
 
 echo ">>> clone --branch ${BRANCH} ."
 
-REPO_URL="https://github.com/WikiAr/make2-web.git"
+REPO_URL="https://github.com/ArWikiCats/ArWikiCatsWeb.git"
 
 TARGET_DIR="$HOME/www/python/src"
 

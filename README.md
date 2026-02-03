@@ -1,8 +1,8 @@
 # ArWikiCats Web Service
 
-[![CI/CD](https://github.com/WikiAr/ArWikiCatsWeb/workflows/pytest/badge.svg)](https://github.com/WikiAr/ArWikiCatsWeb/actions)
-[![codecov](https://codecov.io/gh/WikiAr/ArWikiCatsWeb/branch/main/graph/badge.svg)](https://codecov.io/gh/WikiAr/ArWikiCatsWeb)
-<!-- [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/WikiAr/make2-web) -->
+[![CI/CD](https://github.com/ArWikiCats/ArWikiCatsWeb/workflows/pytest/badge.svg)](https://github.com/ArWikiCats/ArWikiCatsWeb/actions)
+[![codecov](https://codecov.io/gh/ArWikiCats/ArWikiCatsWeb/branch/main/graph/badge.svg)](https://codecov.io/gh/ArWikiCats/ArWikiCatsWeb)
+<!-- [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/ArWikiCats/ArWikiCatsWeb) -->
 
 A Flask-based web service for resolving Arabic Wikipedia category labels. Provides both a web interface and REST API for working with Arabic Wikipedia categories.
 
@@ -28,7 +28,7 @@ A Flask-based web service for resolving Arabic Wikipedia category labels. Provid
 
 1. **Clone the repository:**
 ```bash
-git clone https://github.com/WikiAr/ArWikiCatsWeb.git
+git clone https://github.com/ArWikiCats/ArWikiCatsWeb.git
 cd ArWikiCatsWeb
 ```
 
@@ -252,7 +252,7 @@ The project uses GitHub Actions for continuous integration. Tests run automatica
 
 ## License
 
-This project is part of the WikiAr organization for Arabic Wikipedia tools and services.
+This project is part of the ArWikiCats organization for Arabic Wikipedia tools and services.
 
 ## Contributing
 
