@@ -30,6 +30,9 @@ fi
 # cp -rf ~/srcx/src/* "$HOME/www/python/src/" -v
 cp -rf "$HOME"/srcx/src/* "$TARGET_DIR/" -v || exit 1
 
+# cp requirements.txt to the target directory
+cp -f "$HOME"/srcx/requirements.txt "$TARGET_DIR"/requirements.txt -v
+
 # Remove the "$CLONE_DIR" directory.
 # rm -rf "$CLONE_DIR"
 

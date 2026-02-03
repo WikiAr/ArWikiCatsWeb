@@ -16,7 +16,7 @@ A Flask-based web service for resolving Arabic Wikipedia category labels. This s
 ## Requirements
 
 - Python 3.11+
-- Dependencies listed in `src/requirements.txt`:
+- Dependencies listed in `requirements.txt`:
   - flask
   - flask_cors
   - ArWikiCats
@@ -128,11 +128,12 @@ ArWikiCatsWeb/
 │   ├── logs_db/            # Database logging module
 │   ├── templates/          # HTML templates
 │   ├── static/             # Static assets (CSS, JS)
-│   ├── requirements.txt    # Python dependencies
-│   └── uwsgi.ini          # UWSGI configuration
+│   └── uwsgi.ini           # UWSGI configuration
 ├── service.template        # Toolforge service configuration
-├── run.bat                # Windows run script
-└── README.md              # This file
+├── requirements.txt        # Python dependencies
+├── requirements-dev.txt    # Dev dependencies
+├── run.bat                 # Windows run script
+└── README.md               # This file
 ```
 
 ### Key Components
